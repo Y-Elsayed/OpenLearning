@@ -5,7 +5,8 @@
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "npm run start --prefix server",
-    "client": "npm run start --prefix client"
+    "client": "npm run start --prefix client",
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install && cd .."
   }
 
 }
