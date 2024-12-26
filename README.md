@@ -1,5 +1,8 @@
 # OpenLearning
 
+### Tech Stack
+- MERN stack
+
 ### How to start the program
 
 1. Install dependencies
