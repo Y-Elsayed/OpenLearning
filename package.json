@@ -7,6 +7,9 @@
     "server": "npm run start --prefix server",
     "client": "npm run start --prefix client",
     "install-all": "npm install && cd client && npm install && cd ../server && npm install && cd .."
+  },
+  "dependencies": {
+    "all": "^0.0.0",
+    "mongoose": "^8.9.2"
   }
-
 }
