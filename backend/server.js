@@ -14,6 +14,18 @@ app.get('/', (req, res) => {
   res.send('Hello, Open Learning!');
 });
 
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+  console.log('Login:', JSON.stringify({ email, password }));
+  res.status(200).send('Login successful!');
+});
+
+app.post('/api/register', (req, res) => {
+  const { username, firstName, lastName, email, password, gender, dateOfBirth } = req.body;
+  console.log('register:', JSON.stringify({username, firstName, lastName, email, password, gender, dateOfBirth }));
+  res.status(200).send('Login successful!');
+});
+
 // Connect to MongoDB (replace with your own MongoDB URI)
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
