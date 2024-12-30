@@ -1,5 +1,3 @@
-
-/* filepath: /Users/aymantalat/repos/openLearningRepo/OpenLearning/frontend/src/index.css */
 form {
   margin: 20px 0;
   padding: 20px;
@@ -40,13 +38,3 @@ form button:hover {
   font-size: 0.875em;
   margin-top: 0.25em;
 }
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
