@@ -34,12 +34,15 @@ function RegisterPage() {
     }),
     // Form submit function
     onSubmit: async (values) => {
+      // Remove confirmPassword from values
+      const { confirmPassword, ...filteredValues } = values;
+
       const response = await fetch("/api/register", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(filteredValues),
       });
       if (response.ok) {
         console.log('Register successful!');
