@@ -1,24 +1,32 @@
-import { useNavigate} from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import NavBar from '../components/NavBar';
 
+function HomePage({ onLogout }) {
+  const [userId, setUserId] = useState(null);
 
-function HomePage() {
-  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.user.id);
+      } catch (error) {
+        console.error('Invalid token:', error);
+        localStorage.removeItem('token');
+        onLogout();
+      }
+    }
+  }, [onLogout]);
 
-  const createPostBtn = () => {
-    console.log('Create Post Button Clicked');
-    navigate('/create_post');
-    // console.log(userId);
-  }
-
-  // Request posts from the server
-  // use NavBar component
+  // TODO: Request posts from the server
 
   return (
-    <div>
-      <h1>Home Page</h1>
-     
-      <button onClick={createPostBtn}>Create Post</button>
-    </div>
+    <>
+      <NavBar onLogout={onLogout}/>
+      <h1 className="text-4xl font-bold mb-4">Home Page</h1>
+      <p className="text-lg">User ID: {userId}</p> {/* Display userId for verification */}
+    </>
   );
 }
 
