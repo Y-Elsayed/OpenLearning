@@ -51,9 +51,10 @@ exports.userRegister = async (req, res) => {
             (err, token) => {
                 if (err) throw err;
                 // Send the JWT to the client
-                res.json({ token });
+                res.status(200).json({ token, msg: 'Register successful' });
             }
         );
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
@@ -92,9 +93,10 @@ exports.userLogin = async (req, res) => {
             (err, token) => {
                 if (err) throw err;
                 // Send the JWT to the client
-                res.json({ token });
+                res.status(200).json({ token, msg: 'Login successful' });
             }
         );
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
