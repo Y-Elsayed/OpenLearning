@@ -36,24 +36,7 @@ exports.userRegister = async (req, res) => {
 
         // Save user to database
         await user.save();
-
-        // Return JWT
-        const payload = {
-            user: {
-                id: user._id
-            }
-        };
-
-        jwt.sign(
-            payload,
-            process.env.JWT_SECRET,
-            { expiresIn: 3600000 }, // 1 hour expiration for testing
-            (err, token) => {
-                if (err) throw err;
-                // Send the JWT to the client
-                res.status(200).json({ token, msg: 'Register successful' });
-            }
-        );
+        res.status(201).json({ msg: 'User created successfully' });
 
     } catch (err) {
         console.error(err.message);
