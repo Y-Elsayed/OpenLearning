@@ -2,7 +2,9 @@ const express = require('express');
 // const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+
 const userRoutes = require('./routes/userRoutes'); // Import user routes
+const postRoutes = require('./routes/postRoutes'); // Import post routes
 // Import your models
 const User = require('./models/user');
 const Post = require('./models/post');
@@ -21,6 +23,7 @@ app.get('/', (req, res) => {
 
 // Use user routes
 app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
 
 
 // Connect to MongoDB 
