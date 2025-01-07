@@ -32,7 +32,7 @@ exports.getPosts = async (req, res) => {
     try {
         // Find all posts
         const { page = 1, limit = 10 } = req.query;
-        const pageNumber = parseInt(page, 10);
+        const pageNumber = parseInt(page, 1);
         const limitNumber = parseInt(limit, 10);
         if (pageNumber < 1 || limitNumber < 1) {
             // Handle invalid page and limit values
@@ -40,7 +40,7 @@ exports.getPosts = async (req, res) => {
         }
         
         const posts = await Post.find()
-        .select('title thumbnail') // Specify the fields to include
+        .select('title thumbnail description field created_at creator_id') // later could add feedback and comments when they are implemented
         .limit(limitNumber)
         .skip((pageNumber - 1) * limitNumber)
         .exec();
