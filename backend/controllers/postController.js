@@ -19,10 +19,8 @@ exports.createPost = async (req, res) => {
         });
 
         // Save post to database
-        await post.save(); // Problem here
-        res.status(201).json("Post created successfully");
-
-        res.json(post);
+        await post.save();
+        res.status(201).json({msg: "Post created successfully","post": post}); // maybe remove post from response later
     } catch (err) {
         console.error(err.message);
         res.status(500).json('Server error');
