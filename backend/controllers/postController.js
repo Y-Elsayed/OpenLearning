@@ -27,6 +27,39 @@ exports.createPost = async (req, res) => {
     }
 }
 
+// Get all posts
+exports.getPosts = async (req, res) => {
+    try {
+        // Find all posts
+        const { page = 1, limit = 10 } = req.query;
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
+        if (pageNumber < 1 || limitNumber < 1) {
+            // Handle invalid page and limit values
+            return res.status(400).json({ error: 'Page and limit must be positive integers.' });
+        }
+        
+        const posts = await Post.find()
+        .select('title thumbnail') // Specify the fields to include
+        .limit(limitNumber)
+        .skip((pageNumber - 1) * limitNumber)
+        .exec();
+      
+
+        // Get total documents count
+        const totalPosts = await Post.countDocuments();
+        const totalPages = Math.ceil(totalPosts / limitNumber);
+        res.json({
+            posts,
+            page: pageNumber,
+            totalPages
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json('Server error');
+    }
+}
+
 // Get post by ID
 exports.getPost = async (req, res) => {
     try {
