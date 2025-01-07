@@ -23,7 +23,7 @@ const ResourceSchema = new mongoose.Schema(
 // Step Schema for the steps within a roadmap post
 const StepSchema = new mongoose.Schema(
   {
-    step_number: { type: Number, required: true }, // step number
+    step_number: { type: Number, required: true }, // step number // Maybe remove later, can be inferred from index in array
     title: { type: String, required: true }, // step title
     description: { type: String, required: true }, // step description
     resources: { type: [ResourceSchema], default: [] } // resources related to the step
@@ -34,21 +34,27 @@ const StepSchema = new mongoose.Schema(
 const PostSchema = new mongoose.Schema(
   {
     title: { type: String, required: true }, // roadmap title
-    description: { type: String, required: true }, // roadmap description
+    description: { type: String, required: false }, // roadmap description
     field: { type: String, required: true }, // field of the roadmap (e.g., "Machine Learning")
     creator_id: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'User', // Reference to the User who created the roadmap
       required: true 
     },
-    steps: { type: [StepSchema], required: true }, // array of steps in the roadmap
+    steps: { type: [StepSchema], required: false }, // array of steps in the roadmap
     tags: { type: [String], default: [] }, // tags associated with the roadmap
-    created_at: { type: Date, default: Date.now } // timestamp of post creation
+    createdAt: { type: Date, default: Date.now, immutable: true }, // timestamp of post creation
+    updatedAt: { type: Date, default: Date.now } // timestamp of last update
   },
   {
-    timestamps: true // Automatically adds `createdAt` and `updatedAt`
+    timestamps: { createdAt: true, updatedAt: true } // Automatically adds `createdAt` and `updatedAt`
   }
 );
+
+PostSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
+});
 
 // Export the Post Model
 const Post = mongoose.model('Post', PostSchema);

@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     preferences: { type: [String], default: [] },
-    createdAt: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now , immutable: true}, // timestamp of user creation
     updatedAt: { type: Date, default: Date.now }
   },
   {
