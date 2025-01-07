@@ -7,6 +7,9 @@ const { createPost, getPost, updatePost, deletePost } = require('../controllers/
 // Create Post
 router.post("/", createPost);
 
+//Get All Posts
+router.get("/", getPosts);
+
 // Get Post by ID
 router.get("/:id", getPost);
 
