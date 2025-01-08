@@ -24,8 +24,8 @@ const ResourceSchema = new mongoose.Schema(
 const StepSchema = new mongoose.Schema(
   {
     stepNumber: { type: Number, required: true }, // step number // Maybe remove later, can be inferred from index in array
-    title: { type: String, required: true }, // step title
-    description: { type: String, required: true }, // step description
+    title: { type: String, required: false }, // step title
+    description: { type: String, required: false }, // step description
     resources: { type: [ResourceSchema], default: [] } // resources related to the step
   }
 );

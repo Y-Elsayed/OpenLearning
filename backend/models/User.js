@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    gender: { type: String, enum: ['male', 'female', 'prefer not to say'], default: null },
+    gender: { type: String, enum: ['male', 'female', 'prefer not to say'], default: null , required: true},
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }, // email validation
     password: { type: String, required: true },
