@@ -52,7 +52,7 @@ exports.getPosts = async (req, res) => {
 
         const posts = await Post.find()
             .select('title thumbnail description field createdAt creatorId') // later could add feedback and comments when they are implemented.
-            .populate('username') // add the user profile picture later
+            .populate('creator_id','username') // add the user profile picture later
             .limit(limitNumber)
             .skip((pageNumber - 1) * limitNumber)
             .exec();
