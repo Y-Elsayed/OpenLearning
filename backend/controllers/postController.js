@@ -1,28 +1,39 @@
 const Post = require('../models/post');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 
 // Create a new post
 exports.createPost = async (req, res) => {
-    const { title, description, field, steps,creator_id,tags,created_at } = req.body;
+
+    const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
+    if (!token) {
+        return res.status(401).json({ msg: 'No token provided, authorization denied' });
+    }
 
     try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use your JWT secret key
+        const creatorId = decoded.userId;
+
+        const { title, description, field, steps, tags } = req.body;
         // Create new post
         const post = new Post({
-            creator_id,
+            creatorId,
             title,
             description,
             field,
             steps,
             tags,
-            created_at
         });
 
         // Save post to database
         await post.save();
-        res.status(201).json({msg: "Post created successfully","post": post}); // maybe remove post from response later
+        res.status(201).json({ msg: 'Post created successfully' }); // Success response
     } catch (err) {
         console.error(err.message);
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ msg: 'Invalid token' });
+        }
         res.status(500).json('Server error');
     }
 }
@@ -38,13 +49,13 @@ exports.getPosts = async (req, res) => {
             // Handle invalid page and limit values
             return res.status(400).json({ error: 'Page and limit must be positive integers.' });
         }
-        
+
         const posts = await Post.find()
-        .select('title thumbnail description field created_at creator_id') // later could add feedback and comments when they are implemented
-        .limit(limitNumber)
-        .skip((pageNumber - 1) * limitNumber)
-        .exec();
-      
+            .select('title thumbnail description field createdAt creatorId') // later could add feedback and comments when they are implemented.
+            .populate('username') // add the user profile picture later
+            .limit(limitNumber)
+            .skip((pageNumber - 1) * limitNumber)
+            .exec();
 
         // Get total documents count
         const totalPosts = await Post.countDocuments();
@@ -112,7 +123,7 @@ exports.deletePost = async (req, res) => {
         }
 
         // Check if user is creator of post
-        if (post.creator_id.toString() !== req.user.id) {
+        if (post.creatorId.toString() !== req.user.id) {
             return res.status(401).json({ msg: 'User not authorized' });
         }
 
