@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 // UserBadge Schema (representing the relationship between users and badges)
 const UserBadgeSchema = new mongoose.Schema(
   {
-    userID: { 
+    userId: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'User', // Reference to User model
       required: true 
     },
-    badgeID: { 
+    badgeId: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'Badge', // Reference to Badge model
       required: true 

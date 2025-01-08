@@ -36,7 +36,7 @@ const PostSchema = new mongoose.Schema(
     title: { type: String, required: true }, // roadmap title
     description: { type: String, required: false }, // roadmap description
     field: { type: String, required: true }, // field of the roadmap (e.g., "Machine Learning")
-    creatorID: { 
+    creatorId: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'User', // Reference to the User who created the roadmap
       required: true 
