@@ -75,7 +75,7 @@ exports.getPosts = async (req, res) => {
 exports.getPost = async (req, res) => {
     try {
         // Find post by ID
-        const post = await Post.findById(req.params.id);
+        const post = await Post.findById(req.params.id).populate('creatorId', 'username'); // add the user details later (profile picture, bio, etc.)
         if (!post) {
             return res.status(404).json({ msg: 'Post not found' });
         }
