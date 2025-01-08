@@ -1,28 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 import { Formik, FieldArray, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import NavBar from '../components/NavBar';
 
 function CreatePostPage({ onLogout }) {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState(null);
-
-  // Access the user id from the token
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decodedToken = jwtDecode(token);
-        setUserId(decodedToken.user.id);
-      } catch (error) {
-        console.error('Invalid token:', error);
-        localStorage.removeItem('token');
-        onLogout();
-      }
-    }
-  }, [onLogout]);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const initialValues = {
     title: '',
@@ -46,13 +31,13 @@ function CreatePostPage({ onLogout }) {
   // Form validation schema
   const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
-    description: Yup.string().required('Description is required'),
+    description: Yup.string(),
     field: Yup.string().required('Field is required'),
     tags: Yup.array().of(Yup.string()),
     steps: Yup.array().of(
       Yup.object({
         title: Yup.string().required('Step title is required'),
-        description: Yup.string().required('Step description is required'),
+        description: Yup.string(),
         resources: Yup.array().of(
           Yup.object({
             title: Yup.string().required('Resource title is required'),
@@ -65,12 +50,16 @@ function CreatePostPage({ onLogout }) {
   });
   // Form submit function
   const  onSubmit = async (values) => {
-    // Add creator_id to values
-    values.creator_id = userId;
+    for (let i = 0; i < values.steps.length; i++) {
+      values.steps[i].stepNumber = i + 1;
+    }
     try {
       const response = await fetch("/api/posts", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',  
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
         body: JSON.stringify(values),
       });
 
@@ -79,16 +68,32 @@ function CreatePostPage({ onLogout }) {
         throw new Error(errorText);
       }
 
-      console.log('Post created successfully');
-      navigate('/home');
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate('/home');
+      }, 2000);
     } catch (error) {
       console.error('Post creation error:', error);
-      // setServerError('An error occurred. Please try again.');
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 2000);
     }
   };
 
   return (
     <>
+      {showSuccess && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50">
+          Post created successfully!
+        </div>
+      )}
+      {showError && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50">
+          Post creation error! Please try again.
+        </div>
+      )}
       <NavBar onLogout={onLogout}/>
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded shadow-md w-full max-w-2xl">
@@ -107,7 +112,6 @@ function CreatePostPage({ onLogout }) {
         <div className="mb-4">
           <label htmlFor="description" className="block text-gray-700">Description:</label>
           <Field as="textarea" rows="4" cols="50" type="text" name="description" className="mt-1 p-2 w-full border rounded" />
-          <ErrorMessage name="description" component="p" className="text-red-500 text-sm mt-1" />
         </div>
         <div className="mb-4">
           <label htmlFor="field" className="block text-gray-700">Field:</label>
@@ -126,15 +130,13 @@ function CreatePostPage({ onLogout }) {
                         <div key={index} className="flex items-center mb-2">
                           <Field type="text" name={`tags[${index}]`} className="mt-1 p-2 w-full border rounded" />
                           <ErrorMessage name={`tags[${index}]`} component="p" className="text-red-500 text-sm mt-1 ml-2" />
-                          {index > 0 && (
-                            <button
-                              type="button"
-                              onClick={() => remove(index)}
-                              className="ml-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                            >
-                              Remove
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="ml-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                          >
+                            Remove
+                          </button>
                         </div>
                       ))}
                       <button
@@ -169,7 +171,6 @@ function CreatePostPage({ onLogout }) {
                             <div className="mb-4">
                               <label className="block text-gray-700">Step Description:</label>
                               <Field as="textarea" rows="2" cols="50" name={`steps[${index}].description`} className="mt-1 p-2 w-full border rounded" />
-                              <ErrorMessage name={`steps[${index}].description`} component="p" className="text-red-500 text-sm mt-1" />
                             </div>
                             <h4 className="text-md font-semibold mb-2">Resources:</h4>
                             <FieldArray name={`steps[${index}].resources`}>
