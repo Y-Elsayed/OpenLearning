@@ -13,7 +13,7 @@ exports.createPost = async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use your JWT secret key
-        const creatorId = decoded.userId;
+        const creatorId = decoded.user.id;
 
         const { title, description, field, steps, tags } = req.body;
         // Create new post
@@ -52,7 +52,7 @@ exports.getPosts = async (req, res) => {
 
         const posts = await Post.find()
             .select('title thumbnail description field createdAt creatorId') // later could add feedback and comments when they are implemented.
-            .populate('creator_id','username') // add the user profile picture later
+            .populate('creatorId','username') // add the user profile picture later
             .limit(limitNumber)
             .skip((pageNumber - 1) * limitNumber)
             .exec();
