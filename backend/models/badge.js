@@ -5,8 +5,8 @@ const BadgeSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true },
-    awarded_on: { type: Date, default: Date.now },
-    image_url: { type: String, default: null}
+    awardedOn: { type: Date, default: Date.now },
+    imageURL: { type: String, default: null}
   },
   {
     timestamps: true // Automatically manages `createdAt` and `updatedAt`

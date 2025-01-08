@@ -10,7 +10,7 @@ const ResourceSchema = new mongoose.Schema(
     }, // type of resource
     title: { type: String, required: true }, // title of the resource
     link: { type: String, required: true, match: /^https?:\/\/[^\s$.?#].[^\s]*$/ }, // link to the resource
-    other_type: { 
+    otherType: { 
       type: String, 
       required: function() { return this.type === 'other'; }, // required if the type is 'other'
       minlength: 1,
@@ -23,7 +23,7 @@ const ResourceSchema = new mongoose.Schema(
 // Step Schema for the steps within a roadmap post
 const StepSchema = new mongoose.Schema(
   {
-    step_number: { type: Number, required: true }, // step number // Maybe remove later, can be inferred from index in array
+    stepNumber: { type: Number, required: true }, // step number // Maybe remove later, can be inferred from index in array
     title: { type: String, required: true }, // step title
     description: { type: String, required: true }, // step description
     resources: { type: [ResourceSchema], default: [] } // resources related to the step
@@ -36,7 +36,7 @@ const PostSchema = new mongoose.Schema(
     title: { type: String, required: true }, // roadmap title
     description: { type: String, required: false }, // roadmap description
     field: { type: String, required: true }, // field of the roadmap (e.g., "Machine Learning")
-    creator_id: { 
+    creatorID: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'User', // Reference to the User who created the roadmap
       required: true 
