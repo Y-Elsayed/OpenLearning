@@ -89,7 +89,7 @@ exports.getPost = async (req, res) => {
 
 // Update post by ID
 exports.updatePost = async (req, res) => {
-    const { title, description, field, steps } = req.body;
+    const { title, description, field, steps,tags } = req.body;
 
     try {
         // Find post by ID
@@ -103,6 +103,7 @@ exports.updatePost = async (req, res) => {
         post.description = description;
         post.field = field;
         post.steps = steps;
+        post.tags = tags;
 
         // Save post to database
         await post.save();
