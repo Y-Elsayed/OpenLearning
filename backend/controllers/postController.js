@@ -1,5 +1,4 @@
 const Post = require('../models/post');
-const User = require('../models/user');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
@@ -98,7 +97,7 @@ exports.updatePost = async (req, res) => {
 
     try {
         // Find post by ID
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) { // Check if Object ID is valid
             return res.status(400).json({ error: "Invalid ID format" });
         }        
         let post = await Post.findById(req.params.id);
@@ -124,21 +123,30 @@ exports.updatePost = async (req, res) => {
 
 // Delete post by ID
 exports.deletePost = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
+    if (!token) {
+        return res.status(401).json({ msg: 'No token provided, authorization denied' });
+    }
+
     try {
+        // Validate ID format
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: 'Invalid ID format' });
+        }
+
         // Find post by ID
         let post = await Post.findById(req.params.id);
         if (!post) {
             return res.status(404).json({ msg: 'Post not found' });
         }
-
-        // Check if user is creator of post
-        if (post.creatorId.toString() !== req.user.id) {
+        // Check if user is the creator of the post
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (post.creatorId.toString() !== decoded.user.id) {
             return res.status(401).json({ msg: 'User not authorized' });
         }
-
         // Delete post
-        await post.remove();
-        res.status(200).json("Post deleted successfully");
+        await Post.findByIdAndDelete(req.params.id);
+        res.status(200).json('Post deleted successfully');
     } catch (err) {
         console.error(err.message);
         res.status(500).json('Server error');
