@@ -89,10 +89,17 @@ exports.getPost = async (req, res) => {
 
 // Update post by ID
 exports.updatePost = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
+    if (!token) {
+        return res.status(401).json({ msg: 'No token provided, authorization denied' });
+    }
     const { title, description, field, steps,tags } = req.body;
 
     try {
         // Find post by ID
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid ID format" });
+        }        
         let post = await Post.findById(req.params.id);
         if (!post) {
             return res.status(404).json({ msg: 'Post not found' });
