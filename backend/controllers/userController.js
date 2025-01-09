@@ -61,7 +61,6 @@ exports.userLogin = async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
-        // Return JWT and store in localStorage
         const payload = {
             user: {
                 id: user._id
